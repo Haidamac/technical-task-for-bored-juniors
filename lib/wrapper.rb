@@ -37,8 +37,8 @@ class Wrapper < Thor
       puts ''
       puts 'No activity saved'
     end
-  rescue Thor::UnknownArgumentError => e
-    handle_exception(e)
+  rescue Thor::UndefinedCommandError => e
+    puts 'Could not find command'
   end
 
   desc 'list', 'List the latest activities'
@@ -99,8 +99,8 @@ class Wrapper < Thor
     puts error_message
   end
 
-  def handle_exception(error)
-    raise Thor::UnknownArgumentError, error
+  def handle_exception(message)
+    raise Thor::UnknownArgumentError, message
   end
 end
 

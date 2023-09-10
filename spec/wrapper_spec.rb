@@ -117,12 +117,28 @@ RSpec.describe Wrapper do
         .to_return(status: 200, body: response.to_json)
     end
 
-    
+    it 'validates permitted options' do
+      options = [
+        '--type', 'relaxation'
+      ]
+
+      expect { wrapper.invoke(:new, options) }.not_to raise_error
+    end
+
+    it 'detects unpermitted options' do
+      options = [
+        '--type', 'education',
+        '--participants', '1',
+        '--invalid_option', 'value' # This option is not permitted
+      ]
+
+      expect { wrapper.invoke(:new, options) }.to raise_error(SystemExit)
+    end
   end
 
   describe 'empty database' do
     it 'doesnt raise an error' do
-      expect { wrapper }.not_to raise_error
+      expect { wrapper.invoke(:list) }.not_to raise_error
     end
   end
 end
