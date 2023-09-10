@@ -22,13 +22,16 @@ class Wrapper < Thor
 
     if activity_data
       puts 'Your random activity:'
+      puts ''
       activity_data.each do |key, value|
         puts "#{key}: #{value}"
       end
 
       ActivityManager.save_activity(activity_data)
+      puts ''
       puts 'Your random activity has saved in database'
     else
+      puts ''
       puts 'No activity saved'
     end
   end
@@ -37,8 +40,19 @@ class Wrapper < Thor
 
   def list
     puts 'Your last 5 activities:'
+    puts ''
     activities = ActivityManager.list_activities
-    activities.each { |activity| puts activity.activity }
+    activities.each do |activity|
+      puts "activity: #{activity.activity}"
+      puts "type: #{activity.type}"
+      puts "participants: #{activity.participants}"
+      puts "price: #{activity.price}"
+      puts "link: #{activity.link}"
+      puts "key: #{activity.key}"
+      puts "accessibility: #{activity.accessibility}"
+      puts ''
+    end
+    # activities.each { |activity| puts activity.activity }
   end
 
   def self.exit_on_failure?
