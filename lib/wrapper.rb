@@ -7,6 +7,9 @@ require_relative 'bored_api_wrapper'
 require_relative 'activity_manager'
 
 class Wrapper < Thor
+  ALLOWED_OPTIONS = %w[--type --participants --price_min --price_max --accessibility_min --accessibility_max]
+  ALLOWED_LIST_OPTIONS = %w[--limit]
+
   desc 'new', 'Get and save a new random activity'
   method_option :type,
                 enum: %w[education recreational social diy charity cooking relaxation music busywork]
@@ -15,6 +18,11 @@ class Wrapper < Thor
   method_option :maxaccessibility, type: :numeric, aliases: '--accessibility_max'
   method_option :minprice, type: :numeric, aliases: '--price_min'
   method_option :maxprice, type: :numeric, aliases: '--price_max'
+
+  def initialize(*args)
+    super
+    permitted_options
+  end
 
   def new
     validate
@@ -39,6 +47,8 @@ class Wrapper < Thor
   desc 'list', 'List the latest activities'
 
   def list
+    unpermitted_list_options
+    
     if !ActivityManager.list_activities.empty?
       puts 'Your last 5 activities:'
       puts ''
@@ -84,6 +94,24 @@ class Wrapper < Thor
     return unless value && (value < min || value > max)
 
     puts error_message
+  end
+
+  def permitted_options
+    ARGV.each do |arg|
+      unless ALLOWED_OPTIONS.include?(arg)
+        puts "Error: Unpermitted option '#{arg}'"
+        exit(1)
+      end
+    end
+  end
+
+  def unpermitted_list_options
+    ARGV.each do |arg|
+      unless ALLOWED_LIST_OPTIONS.include?(arg)
+        puts "Error: Unpermitted option '#{arg}' for 'list' command"
+        exit(1)
+      end
+    end
   end
 end
 
