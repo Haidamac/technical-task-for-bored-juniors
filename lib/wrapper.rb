@@ -7,8 +7,7 @@ require_relative 'bored_api_wrapper'
 require_relative 'activity_manager'
 
 class Wrapper < Thor
-  ALLOWED_OPTIONS = %w[--type --participants --price_min --price_max --accessibility_min --accessibility_max]
-  ALLOWED_LIST_OPTIONS = %w[--limit]
+  ALLOWED_NEW_OPTIONS = %w[type participants minprice maxprice minaccessibility maxaccessibility]
 
   desc 'new', 'Get and save a new random activity'
   method_option :type,
@@ -19,12 +18,8 @@ class Wrapper < Thor
   method_option :minprice, type: :numeric, aliases: '--price_min'
   method_option :maxprice, type: :numeric, aliases: '--price_max'
 
-  def initialize(*args)
-    super
-    permitted_options
-  end
-
   def new
+    permitted_new_options
     validate
     activity_data = BoredApiWrapper.random_activity(options)
 
@@ -37,18 +32,18 @@ class Wrapper < Thor
 
       ActivityManager.save_activity(activity_data)
       puts ''
-      puts 'Your random activity has saved in database'
+      puts 'Your random activity has been saved in database'
     else
       puts ''
       puts 'No activity saved'
     end
+  rescue Thor::UnknownArgumentError => e
+    handle_exception(e)
   end
 
   desc 'list', 'List the latest activities'
 
   def list
-    unpermitted_list_options
-    
     if !ActivityManager.list_activities.empty?
       puts 'Your last 5 activities:'
       puts ''
@@ -74,6 +69,14 @@ class Wrapper < Thor
 
   private
 
+  def permitted_new_options
+    options.each do |arg|
+      unless ALLOWED_NEW_OPTIONS.include?(arg[0])
+        handle_exception("Error: Unpermitted option #{arg[0]} for 'new' command")
+      end
+    end
+  end
+
   def validate
     validate_participants(options[:participants])
     validate_range(options[:minaccessibility], 0.0, 1.0,
@@ -96,22 +99,9 @@ class Wrapper < Thor
     puts error_message
   end
 
-  def permitted_options
-    ARGV.each do |arg|
-      unless ALLOWED_OPTIONS.include?(arg)
-        puts "Error: Unpermitted option '#{arg}'"
-        exit(1)
-      end
-    end
-  end
-
-  def unpermitted_list_options
-    ARGV.each do |arg|
-      unless ALLOWED_LIST_OPTIONS.include?(arg)
-        puts "Error: Unpermitted option '#{arg}' for 'list' command"
-        exit(1)
-      end
-    end
+  def handle_exception(error)
+    raise Thor::UnknownArgumentError, error
+    exit(false)
   end
 end
 
