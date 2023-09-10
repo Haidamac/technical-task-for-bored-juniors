@@ -133,16 +133,19 @@ RSpec.describe Wrapper do
   end
 
   describe 'list successfully' do
-    let!(:activity1) {{
-      activity: 'Test Activity',
-      type: 'relaxation',
-      participants: 1,
-      price: 0.1,
-      link: 'https://example.com/',
-      key: '123456',
-      accessibility: 0.1
-    }}
-    let!(:activity2) {{
+    let(:activity1) do
+      {
+        activity: 'Test Activity',
+        type: 'relaxation',
+        participants: 1,
+        price: 0.1,
+        link: 'https://example.com/',
+        key: '123456',
+        accessibility: 0.1
+      }
+    end
+    let(:activity2) do
+      {
         activity: 'Test Activity 2',
         type: 'relaxation',
         participants: 1,
@@ -150,7 +153,8 @@ RSpec.describe Wrapper do
         link: 'https://example2.com/',
         key: '123456',
         accessibility: 0.4
-     }}
+      }
+    end
 
     it 'doesnt raise an error' do
       expect { wrapper.invoke(:list) }.not_to raise_error

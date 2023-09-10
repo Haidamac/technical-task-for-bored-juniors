@@ -37,7 +37,7 @@ class Wrapper < Thor
       puts ''
       puts 'No activity saved'
     end
-  rescue Thor::UndefinedCommandError => e
+  rescue Thor::UndefinedCommandError
     puts 'Could not find command'
   end
 
