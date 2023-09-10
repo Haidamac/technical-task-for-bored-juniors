@@ -39,20 +39,23 @@ class Wrapper < Thor
   desc 'list', 'List the latest activities'
 
   def list
-    puts 'Your last 5 activities:'
-    puts ''
-    activities = ActivityManager.list_activities
-    activities.each do |activity|
-      puts "activity: #{activity.activity}"
-      puts "type: #{activity.type}"
-      puts "participants: #{activity.participants}"
-      puts "price: #{activity.price}"
-      puts "link: #{activity.link}"
-      puts "key: #{activity.key}"
-      puts "accessibility: #{activity.accessibility}"
+    if !ActivityManager.list_activities.empty?
+      puts 'Your last 5 activities:'
       puts ''
+      activities = ActivityManager.list_activities
+      activities.each do |activity|
+        puts "activity: #{activity.activity}"
+        puts "type: #{activity.type}"
+        puts "participants: #{activity.participants}"
+        puts "price: #{activity.price}"
+        puts "link: #{activity.link}"
+        puts "key: #{activity.key}"
+        puts "accessibility: #{activity.accessibility}"
+        puts ''
+      end
+    else
+      puts 'No activities found'
     end
-    # activities.each { |activity| puts activity.activity }
   end
 
   def self.exit_on_failure?
