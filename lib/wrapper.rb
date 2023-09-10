@@ -7,7 +7,7 @@ require_relative 'bored_api_wrapper'
 require_relative 'activity_manager'
 
 class Wrapper < Thor
-  ALLOWED_NEW_OPTIONS = %w[type participants minprice maxprice minaccessibility maxaccessibility]
+  ALLOWED_NEW_OPTIONS = %w[type participants minprice maxprice minaccessibility maxaccessibility].freeze
 
   desc 'new', 'Get and save a new random activity'
   method_option :type,
@@ -44,7 +44,9 @@ class Wrapper < Thor
   desc 'list', 'List the latest activities'
 
   def list
-    if !ActivityManager.list_activities.empty?
+    if ActivityManager.list_activities.empty?
+      puts 'No activities found'
+    else
       puts 'Your last 5 activities:'
       puts ''
       activities = ActivityManager.list_activities
@@ -58,8 +60,6 @@ class Wrapper < Thor
         puts "accessibility: #{activity.accessibility}"
         puts ''
       end
-    else
-      puts 'No activities found'
     end
   end
 
@@ -101,7 +101,6 @@ class Wrapper < Thor
 
   def handle_exception(error)
     raise Thor::UnknownArgumentError, error
-    exit(false)
   end
 end
 

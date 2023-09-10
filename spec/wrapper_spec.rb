@@ -30,7 +30,7 @@ RSpec.describe Wrapper do
   end
 
   describe 'output check' do
-    before(:each) do
+    before do
       response = {
         activity: 'Test Activity',
         type: 'relaxation',
@@ -63,7 +63,7 @@ RSpec.describe Wrapper do
   end
 
   describe 'values_validation' do
-    before(:each) do
+    before do
       response = { error: 'No activity found with the specified parameters' }
       stub_request(:get, 'https://www.boredapi.com/api/activity')
         .to_return(status: 200, body: response.to_json)
@@ -103,7 +103,7 @@ RSpec.describe Wrapper do
   end
 
   describe 'new options validation' do
-    before(:each) do
+    before do
       response = {
         activity: 'Test Activity',
         type: 'relaxation',
@@ -116,6 +116,8 @@ RSpec.describe Wrapper do
       stub_request(:get, 'https://www.boredapi.com/api/activity')
         .to_return(status: 200, body: response.to_json)
     end
+
+    
   end
 
   describe 'empty database' do
