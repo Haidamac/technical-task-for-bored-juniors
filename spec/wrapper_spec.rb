@@ -29,7 +29,7 @@ RSpec.describe Wrapper do
     end
   end
 
-  describe 'new' do
+  describe 'output check' do
     before(:each) do
       response = {
         activity: 'Test Activity',
@@ -62,7 +62,7 @@ RSpec.describe Wrapper do
     end
   end
 
-  describe 'too_many_perticipants' do
+  describe 'values_validation' do
     before(:each) do
       response = { error: 'No activity found with the specified parameters' }
       stub_request(:get, 'https://www.boredapi.com/api/activity')
@@ -99,6 +99,28 @@ RSpec.describe Wrapper do
 
       expect(output).to include('No activity found with the specified parameters')
       expect(output).to include('No activity saved')
+    end
+  end
+
+  describe 'new options validation' do
+    before(:each) do
+      response = {
+        activity: 'Test Activity',
+        type: 'relaxation',
+        participants: 1,
+        price: 0.1,
+        link: 'https://example.com/',
+        key: '123456',
+        accessibility: 0.1
+      }
+      stub_request(:get, 'https://www.boredapi.com/api/activity')
+        .to_return(status: 200, body: response.to_json)
+    end
+  end
+
+  describe 'empty database' do
+    it 'doesnt raise an error' do
+      expect { wrapper }.not_to raise_error
     end
   end
 end
