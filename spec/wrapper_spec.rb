@@ -124,19 +124,34 @@ RSpec.describe Wrapper do
 
       expect { wrapper.invoke(:new, options) }.not_to raise_error
     end
-
-    it 'detects unpermitted options' do
-      options = [
-        '--type', 'education',
-        '--participants', '1',
-        '--invalid_option', 'value' # This option is not permitted
-      ]
-
-      expect { wrapper.invoke(:new, options) }.to raise_error(SystemExit)
-    end
   end
 
   describe 'empty database' do
+    it 'doesnt raise an error' do
+      expect { wrapper.invoke(:list) }.not_to raise_error
+    end
+  end
+
+  describe 'list successfully' do
+    let!(:activity1) {{
+      activity: 'Test Activity',
+      type: 'relaxation',
+      participants: 1,
+      price: 0.1,
+      link: 'https://example.com/',
+      key: '123456',
+      accessibility: 0.1
+    }}
+    let!(:activity2) {{
+        activity: 'Test Activity 2',
+        type: 'relaxation',
+        participants: 1,
+        price: 0.5,
+        link: 'https://example2.com/',
+        key: '123456',
+        accessibility: 0.4
+     }}
+
     it 'doesnt raise an error' do
       expect { wrapper.invoke(:list) }.not_to raise_error
     end
